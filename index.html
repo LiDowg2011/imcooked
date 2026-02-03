@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NAME PROBE - ABYSS EDITION</title>
+  <style>
+    body { 
+      background: #000; 
+      color: #0f0; 
+      font-family: 'Courier New', monospace; 
+      text-align: center; 
+      padding: 40px; 
+      margin: 0; 
+    }
+    h1 { font-size: 4em; text-shadow: 0 0 10px #f00; }
+    input { font-size: 2em; padding: 15px; width: 60%; max-width: 500px; margin: 20px; background: #111; color: #0f0; border: 2px solid #0f0; }
+    button { font-size: 2.5em; padding: 15px 40px; background: #f00; color: #000; border: none; cursor: pointer; box-shadow: 0 0 20px #f00; }
+    button:hover { background: #ff0; }
+    #result { font-size: 2.5em; margin-top: 50px; min-height: 200px; word-break: break-all; }
+    .loading { animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0.3; } }
+  </style>
+</head>
+<body>
+  <h1>UNLEASH THE PROBE</h1>
+  <input id="name" placeholder="TYPE THE NAME... OR DIE TRYING" autofocus>
+  <br>
+  <button onclick="probeTheVoid()">PROBE THE FUCKING VOID</button>
+  <div id="result">SACRIFICE REQUIRED...</div>
+
+  <script>
+    async function probeTheVoid() {
+      const name = document.getElementById('name').value.trim().toLowerCase();
+      if (!name) {
+        alert("GIVE ME A FUCKING NAME YOU DEGENERATE");
+        return;
+      }
+
+      const result = document.getElementById('result');
+      result.innerHTML = `<span class="loading">DIVING INTO HELL... [${name}]</span>`;
+
+      // TARGET: Pornhub search (change if you want XVideos etc.)
+      const targetUrl = `https://www.pornhub.com/video/search?search=${encodeURIComponent(name)}`;
+
+      // 2026 WORKING PROXIES (from fresh lists — they die fast, add/remove as needed)
+      const proxies = [
+        'https://api.allorigins.win/raw?url=',                // usually reliable
+        'https://corsproxy.io/?',                             // solid prefix style
+        'https://test.cors.workers.dev/',                     // cloudflare one
+        'https://cors.x2u.in/',                               // small but works sometimes
+        'https://codetabs.com/cors-proxy/cors-proxy.php?req=', // GET only but fast
+        // add more corpses if these rot: https://cors-anywhere.com/ (needs temp request sometimes)
+      ];
+
+      let found = false;
+      let usedProxy = 'none';
+      let errorLog = [];
+
+      for (const proxy of proxies) {
+        try {
+          const fullUrl = proxy + encodeURIComponent(targetUrl);
+          const response = await fetch(fullUrl, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+          });
+
+          if (!response.ok) {
+            errorLog.push(`${proxy} → ${response.status}`);
+            continue;
+          }
+
+          const html = await response.text();
+          usedProxy = proxy;
+
+          // Brutal parse: look for name in ANY text (titles, descriptions, tags)
+          if (html.toLowerCase().includes(name)) {
+            found = true;
+            // Bonus: try to find a real video link snippet (very crude)
+            const match = html.match(/video\/viewkey=([a-z0-9]+)/i);
+            const videoId = match ? match[1] : null;
+            break;
+          }
+        } catch (e) {
+          errorLog.push(`${proxy} → ${e.message}`);
+        }
+      }
+
+      if (found) {
+        result.innerHTML = `JACKPOT MOTHERFUCKER 🔥🔥🔥<br>
+          "${name.toUpperCase()}" IS LURKING IN THE DEPTHS!<br>
+          Proxy survivor: ${usedProxy.replace(/https?:\/\//, '')}<br>
+          (Probably a video — search manually if you dare)`;
+      } else {
+        result.innerHTML = `GHOSTED... NO TRACE FOUND 😇<br>
+          Proxies tried: ${proxies.length} — survivors: ${usedProxy !== 'none' ? 1 : 0}<br>
+          Errors: ${errorLog.join(' | ')}<br>
+          School firewall wins this round... or name is too vanilla.`;
+      }
+    }
+  </script>
+</body>
+</html>index.html
