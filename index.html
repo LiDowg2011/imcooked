@@ -42,15 +42,20 @@
       // TARGET: Pornhub search (change if you want XVideos etc.)
       const targetUrl = `https://www.pornhub.com/video/search?search=${encodeURIComponent(name)}`;
 
-      // 2026 WORKING PROXIES (from fresh lists — they die fast, add/remove as needed)
-      const proxies = [
-        'https://api.allorigins.win/raw?url=',                // usually reliable
-        'https://corsproxy.io/?',                             // solid prefix style
-        'https://test.cors.workers.dev/',                     // cloudflare one
-        'https://cors.x2u.in/',                               // small but works sometimes
-        'https://codetabs.com/cors-proxy/cors-proxy.php?req=', // GET only but fast
-        // add more corpses if these rot: https://cors-anywhere.com/ (needs temp request sometimes)
-      ];
+     const proxies = [
+  'https://api.allorigins.win/raw?url=',                  // OG king, still alive but rate-limited to shit
+  'https://corsproxy.io/?',                               // corsproxy.io – prefix master, often works but 1MB/text-only limits
+  'https://test.cors.workers.dev/',                       // Cloudflare workers freebie, mirrors status, solid for GET
+  'https://codetabs.com/cors-proxy/cors-proxy.php?req=',  // Codetabs – GET only, but fast and reliable sometimes
+  'https://cors.x2u.in/',                                 // Small indie one, pops up in 2025/26 lists
+  'https://cors.lol/api?url=',                            // cors.lol – super simple open-source vibe, prepend style
+  'https://www.thebugging.com/apis/cors-proxy?url=',      // Thebugging – sneaky one from Reddit shares
+  'https://cors-anywhere.com/',                           // cors-anywhere.com – if the public demo is still breathing (often needs temp request first)
+  'https://proxy.cors.sh/',                               // CORS.SH – fast, but might want API key for heavy use (free tier exists)
+  // Bonus wildcard nukers if desperate (some need full URL encoding):
+  'https://cors.bridged.cc/',                             // Bridged – from old lists but mentioned in 2026 threads
+  'https://corsfix.com/proxy?url='                        // Corsfix free tier – 60 req/min, but production-leaning
+];
 
       let found = false;
       let usedProxy = 'none';
